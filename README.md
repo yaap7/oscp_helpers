@@ -1,4 +1,4 @@
-# oscp_helpers
+# OSCP Helpers
 
 Various scripts made for OSCP lab
 

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+for f in $@ ; do
+    i686-w64-mingw32-gcc-win32 -Wall -static "${f}" -o "${f%.c}.exe"
+done

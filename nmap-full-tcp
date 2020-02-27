@@ -1,0 +1,4 @@
+#!/bin/bash
+
+sudo nmap -Pn -n -vv --open -sT -sV -sC -p - -oA "${1}_full_tcp_versions_scripts" "$1"
+

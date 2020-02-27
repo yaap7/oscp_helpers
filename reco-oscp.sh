@@ -16,7 +16,7 @@ function reco() {
     topUdp=200
     sTime=3
     weblistCommon='/usr/share/seclists/Discovery/Web-Content/common.txt'
-    nmapOpt='-Pn -n -vv --open'
+    nmapOpt='-Pn -n -vv --open --max-retries 2'
 
     info "reco of $1 starting"
     mkdir -p "reco_$1"
@@ -109,7 +109,7 @@ function reco() {
     for port in 80 8080 ; do
         if grep -q "^${port}\$" "tcp_ports.txt" ; then
             info "Port $port open, launching dirb with common wordlist"
-            dirb "http://${1}/" "$weblistCommon"| tee dirb_http-${1}_common.log
+            dirb "http://${1}:${port}/" "$weblistCommon"| tee dirb_http-${1}-${port}_common.log
             sleep "$sTime"
         fi
     done
@@ -117,7 +117,7 @@ function reco() {
     for port in 443 8443 ; do
         if grep -q "^${port}\$" "tcp_ports.txt" ; then
             info "Port $port open, launching dirb with common wordlist"
-            dirb "https://${1}/" "$weblistCommon"| tee dirb_https-${1}_common.log
+            dirb "https://${1}:${port}/" "$weblistCommon"| tee dirb_https-${1}-${port}_common.log
             sleep "$sTime"
         fi
     done

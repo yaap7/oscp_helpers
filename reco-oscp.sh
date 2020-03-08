@@ -13,18 +13,24 @@ function grep-ip() {
 }
 
 function reco() {
-    dirReco="${1}/reco"
+    ip="${1}"
+    
+    dirReco="${ip}/reco"
     topUdp=200
     sTime=3
     nmapOpt='-Pn -n -vv --open --max-retries 2 --max-rtt-timeout 200ms'
     weblistCommon='/usr/share/seclists/Discovery/Web-Content/common.txt'
+    weblistFuzz='/home/kali/tools/fuzz.txt/fuzz.txt'
     defaultUA='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3569.0 Safari/537.36'
 
-    ip="${1}"
     info "reco of ${ip} starting"
 
     mkdir -p "${dirReco}"
     cd "${dirReco}"
+
+    ################
+    ###   NMAP   ###
+    ################
 
     info "TCP scan on ${ip}"
     sudo nmap $nmapOpt -sT -p - -oA "nmap_${ip}_tcp_all_ports" "${ip}"
@@ -114,6 +120,10 @@ function reco() {
         sleep "$sTime"
     fi
 
+    #################
+    ###   NIKTO   ###
+    #################
+
     for port in 80 443 8080 8443 ; do
         if grep -q "^${port}\$" "tcp_ports.txt" ; then
             info "Port $port open, launching nikto"
@@ -121,6 +131,10 @@ function reco() {
             sleep "$sTime"
         fi
     done
+
+    ####################
+    ###   GOBUSTER   ###
+    ####################
 
     for port in 80 8080 ; do
         if grep -q "^${port}\$" "tcp_ports.txt" ; then
